@@ -7,7 +7,7 @@
 import DI
 
 public protocol ReadUsecase {
-    func read(startIndex: IndexType, pageMaxSize: Int, _: @escaping (Result<[WordEntity], Error>) -> Void)
+    func read(startIndex: IndexType, pageMaxSize: Int, _: @escaping (Result<[WordType], Error>) -> Void)
 }
 
 public final class DefaultReadUsecase: ReadUsecase {
@@ -15,7 +15,7 @@ public final class DefaultReadUsecase: ReadUsecase {
 
     public init() {}
 
-    public func read(startIndex: IndexType, pageMaxSize: Int, _ handler: @escaping (Result<[WordEntity], Error>) -> Void) {
+    public func read(startIndex: IndexType, pageMaxSize: Int, _ handler: @escaping (Result<[WordType], Error>) -> Void) {
         readRepo.read(startIndex: startIndex, pageMaxSize: pageMaxSize, handler)
     }
 }

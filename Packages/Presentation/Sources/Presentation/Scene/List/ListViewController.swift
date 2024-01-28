@@ -72,11 +72,11 @@ fileprivate extension ListViewController {
     }
 
     func bind() {
-        viewModel.latestPage
+        viewModel.page
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
                 guard let self, case .loaded(let result) = $0 else { return }
-                snapshot.appendItems(result.map { $0.word })
+                snapshot.appendItems(result)
                 dataSource.apply(snapshot, animatingDifferences: true)
             }.store(in: &cancellables)
 
@@ -93,6 +93,6 @@ extension ListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        viewModel.didSelectItemAt(at: indexPath.row)
+        // viewModel.didSelectItemAt(at: indexPath.row)
     }
 }

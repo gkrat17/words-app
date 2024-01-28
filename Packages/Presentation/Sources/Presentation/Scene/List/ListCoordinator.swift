@@ -10,7 +10,7 @@ import UIKit
 
 protocol ListCoordinator {
     func start()
-    func onWordEntity(entity: WordEntity)
+    func on(word: WordType)
 }
 
 final class DefaultListCoordinator: ListCoordinator {
@@ -21,7 +21,7 @@ final class DefaultListCoordinator: ListCoordinator {
         navigationController.pushViewController(ListViewController(), animated: true)
     }
 
-    func onWordEntity(entity: WordEntity) {
-        detailsCoordinator.start(with: entity)
+    func on(word: WordType) {
+        detailsCoordinator.start(with: word)
     }
 }

@@ -9,13 +9,13 @@ import Domain
 import UIKit
 
 protocol DetailsCoordinator {
-    func start(with entity: WordEntity)
+    func start(with entity: WordType)
 }
 
 final class DefaultDetailsCoordinator: DetailsCoordinator {
     @Inject(container: .default) private var navigationController: UINavigationController
 
-    func start(with entity: WordEntity) {
+    func start(with entity: WordType) {
         let viewController = DetailsViewController()
         navigationController.pushViewController(viewController, animated: true)
     }

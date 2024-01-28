@@ -9,61 +9,69 @@ import DI
 import Domain
 import Foundation
 
-@MainActor final class ListViewModel {
+final class ListViewModel {
     /* State */
-    var query = CurrentValueSubject<String, Never>("")
-    private(set) var latestPage = CurrentValueSubject<Loadable<[WordEntity]>, Never>(.notRequested)
+    var query = CurrentValueSubject<String, Never>(.init())
+    private(set) var page = CurrentValueSubject<Loadable<[WordType]>, Never>(.notRequested)
     private(set) var clear = PassthroughSubject<Void, Never>()
-    private(set) var list = [WordEntity]()
+    private(set) var list = [WordType]()
+    private var loaded = false
     /* Deps */
     @Inject(container: .usecases) private var readUsecase: ReadUsecase
+    @Inject(container: .usecases) private var eventUsecase: EventUsecase
     @Inject(container: .coordinators) private var coordinator: ListCoordinator
     /* Misc */
-    private var cancellable: AnyCancellable?
+    private var cancellables = Set<AnyCancellable>()
 
     nonisolated init() {}
 
     func configure() {
-        cancellable = query
+        query
             .debounce(for: 0.5, scheduler: DispatchQueue.main)
             .removeDuplicates()
-            .sink { [weak self] in
+            .sink { [weak self] query in
                 guard let self else { return }
-                list.removeAll()
                 clear.send(())
-                fetchNextPage(startIndex: .zero, query: $0)
-            }
+                page.value = .loaded(list.filter(with: query))
+            }.store(in: &cancellables)
     }
 }
 
 extension ListViewModel {
     func viewDidLoad() {
-        fetchNextPage(startIndex: .zero)
+        tryFetchNextPage()
     }
 
     func cellWillDisplay(at index: Int) {
         if index == list.count - 1 {
-            fetchNextPage(startIndex: list.count)
+            tryFetchNextPage()
         }
     }
 
     func didSelectItemAt(at index: Int) {
         guard index < list.count else { return }
         let entity = list[index]
-        coordinator.onWordEntity(entity: entity)
+        coordinator.on(word: entity)
     }
 }
 
 fileprivate extension ListViewModel {
-    func fetchNextPage(startIndex: Int, query: String? = nil, pageMaxSize: Int = 5) {
-        if case .isLoading = latestPage.value { return }
-        latestPage.value = .isLoading
-        readUsecase.read(startIndex: startIndex, pageMaxSize: pageMaxSize) { [weak self] result in
+    func tryFetchNextPage() {
+        if loaded { return }
+
+        if case .isLoading = page.value { return }
+        page.value = .isLoading
+
+        readUsecase.read(startIndex: list.count, pageMaxSize: 20) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let result):
+                if result.isEmpty {
+                    loaded = true
+                    return
+                }
                 list.append(contentsOf: result)
-                latestPage.value = .loaded(result)
+                page.value = .loaded(result.filter(with: query.value))
             case .failure(let error):
                 print(error)
             }

@@ -5,5 +5,5 @@
 //
 
 public protocol ReadRepo {
-    func read(startIndex: IndexType, pageMaxSize: Int, _: @escaping (Result<[WordEntity], Error>) -> Void)
+    func read(startIndex: IndexType, pageMaxSize: Int, _: @escaping (Result<[WordType], Error>) -> Void)
 }

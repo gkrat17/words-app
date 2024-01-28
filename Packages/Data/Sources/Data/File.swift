@@ -34,15 +34,15 @@ public class Repo: AddRepo, DeleteRepo, FavoriteRepo, ReadRepo {
         }
     }
 
-    public func read(startIndex: IndexType, pageMaxSize: Int, _ handler: @escaping (Result<[WordEntity], Error>) -> Void) {
+    public func read(startIndex: IndexType, pageMaxSize: Int, _ handler: @escaping (Result<[WordType], Error>) -> Void) {
         guard startIndex < set.count else {
-            handler(.failure(ErrorEntity.error))
+            handler(.success([]))
             return
         }
         let endIndex = min(startIndex - 1 + pageMaxSize, set.count - 1)
-        var result = Array<WordEntity>()
+        var result = Array<WordType>()
         for i in startIndex...endIndex {
-            result.append(.init(word: set[i] as! String, info: array[i]))
+            result.append(set[i] as! WordType)
         }
         handler(.success(result))
     }
