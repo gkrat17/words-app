@@ -12,8 +12,9 @@ public class Repo: AddRepo, DeleteRepo, FavoriteRepo, ReadRepo {
     var set = NSMutableOrderedSet()
     var array = Array<WordInfoEntity>()
 
-    public func read(afterIndex: IndexType, pageMaxSize: Int, _ handler: @escaping (Result<[WordEntity], Error>) -> Void) {
-        let startIndex = afterIndex + 1
+    public init() {}
+
+    public func read(startIndex: IndexType, pageMaxSize: Int, _ handler: @escaping (Result<[WordEntity], Error>) -> Void) {
         guard startIndex < set.count else {
             handler(.failure(ErrorEntity.error))
             return

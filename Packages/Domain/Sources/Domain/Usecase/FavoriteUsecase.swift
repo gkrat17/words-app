@@ -16,11 +16,13 @@ public protocol UnfavoritingUsecase {
     func unfavorite(word: WordType, _: @escaping (Result<Void, Error>) -> Void)
 }
 
-final class DefaultFavoriteUsecasee: FavoriteUsecase {
+public final class DefaultFavoriteUsecase: FavoriteUsecase {
     @Inject(container: .usecases) private var eventSendingUsecase: EventSendingUsecase
     @Inject(container: .repos) private var favoriteRepo: FavoriteRepo
 
-    func favorite(word: WordType, _ handler: @escaping (Result<Void, Error>) -> Void) {
+    public init() {}
+
+    public func favorite(word: WordType, _ handler: @escaping (Result<Void, Error>) -> Void) {
         favoriteRepo.favorite(word: word) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -35,7 +37,7 @@ final class DefaultFavoriteUsecasee: FavoriteUsecase {
         }
     }
 
-    func unfavorite(word: WordType, _ handler: @escaping (Result<Void, Error>) -> Void) {
+    public func unfavorite(word: WordType, _ handler: @escaping (Result<Void, Error>) -> Void) {
         favoriteRepo.unfavorite(word: word) { [weak self] result in
             guard let self else { return }
             switch result {

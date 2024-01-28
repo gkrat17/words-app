@@ -8,8 +8,8 @@ import DI
 import UIKit
 
 public enum Presentation {
-    public static func configure(Usecases: DependencyContainer) {
-        DependencyContainer.Usecases = Usecases
+    public static func configure(usecases: DependencyContainer) {
+        DependencyContainer.usecases = usecases
     }
 
     public static func initial() -> UIViewController {

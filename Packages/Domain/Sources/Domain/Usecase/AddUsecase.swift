@@ -10,11 +10,13 @@ public protocol AddUsecase {
     func add(word: WordType, _: @escaping (Result<Void, Error>) -> Void)
 }
 
-final class DefaultAddUsecase: AddUsecase {
+public final class DefaultAddUsecase: AddUsecase {
     @Inject(container: .usecases) private var eventSendingUsecase: EventSendingUsecase
     @Inject(container: .repos) private var addRepo: AddRepo
 
-    func add(word: WordType, _ handler: @escaping (Result<Void, Error>) -> Void) {
+    public init() {}
+
+    public func add(word: WordType, _ handler: @escaping (Result<Void, Error>) -> Void) {
         addRepo.add(word: word) { [weak self] result in
             guard let self else { return }
             switch result {

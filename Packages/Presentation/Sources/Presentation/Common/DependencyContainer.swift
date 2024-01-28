@@ -8,7 +8,7 @@ import DI
 import UIKit
 
 extension DependencyContainer {
-    static var Usecases = DependencyContainer {}
+    static var usecases = DependencyContainer {}
 }
 
 extension DependencyContainer {

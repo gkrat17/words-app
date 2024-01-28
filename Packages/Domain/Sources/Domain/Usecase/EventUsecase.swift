@@ -16,8 +16,10 @@ public protocol EventSendingUsecase {
 
 public protocol EventUsecase: EventPublishingUsecase, EventSendingUsecase {}
 
-final class DefaultEventUsecase: EventUsecase {
+public final class DefaultEventUsecase: EventUsecase {
     private lazy var _publisher = PassthroughSubject<EventEntity, Never>()
+
+    public init() {}
 
     public var publisher: AnyPublisher<EventEntity, Never> {
         _publisher.eraseToAnyPublisher()

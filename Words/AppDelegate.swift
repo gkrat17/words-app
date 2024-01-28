@@ -5,6 +5,10 @@
 //  Created by giorgi kratsashvili on 28.01.24.
 //
 
+import Domain
+import Presentation
+import Data
+import DI
 import UIKit
 
 @main
@@ -13,7 +17,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        let repo = Repo()
+        Domain.configure(repos: .init {
+            Dependency { repo as AddRepo }
+            Dependency { repo as DeleteRepo }
+            Dependency { repo as FavoriteRepo }
+            Dependency { repo as ReadRepo }
+        })
+        let usecases = DependencyContainer {
+            Dependency { DefaultAddUsecase() as AddUsecase }
+            Dependency { DefaultDeleteUsecase() as DeleteUsecase }
+            Dependency { DefaultEventUsecase() as EventUsecase }
+            Dependency { DefaultFavoriteUsecase() as FavoriteUsecase }
+            Dependency { DefaultReadUsecase() as ReadUsecase }
+        }
+        Domain.configure(usecases: usecases)
+        Presentation.configure(usecases: usecases)
         return true
     }
 
