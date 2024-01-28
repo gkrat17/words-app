@@ -5,7 +5,13 @@
 //
 
 import Combine
+import Foundation
 
 @MainActor final class ListViewModel {
     nonisolated init() {}
+    
+    func asd() {
+        let a = NSMutableOrderedSet()
+        a.index(of: "")
+    }
 }
