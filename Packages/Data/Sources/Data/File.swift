@@ -6,22 +6,34 @@
 //
 
 import Foundation
+import Domain
 
-class Repo {
+public class Repo: AddRepo, DeleteRepo, FavoriteRepo, ReadRepo {
     var set = NSMutableOrderedSet()
-    var array = Array<Info>()
+    var array = Array<WordInfoEntity>()
 
-    func fetch(lastIndex: Int, page: UInt, handler: @escaping (Result<Void, Error>) -> Void) {
-        
+    public func read(afterIndex: IndexType, pageMaxSize: Int, _ handler: @escaping (Result<[WordEntity], Error>) -> Void) {
+        let startIndex = afterIndex + 1
+        guard startIndex < set.count else {
+            handler(.failure(ErrorEntity.error))
+            return
+        }
+        let endIndex = min(startIndex - 1 + pageMaxSize, set.count - 1)
+        var result = Array<WordEntity>()
+        for i in startIndex...endIndex {
+            result.append(.init(word: set[i] as! String, info: array[i]))
+        }
+        handler(.success(result))
     }
-    func add(word: String, handler: @escaping (Result<Int?, Error>) -> Void) {
+
+    public func add(word: String, _ handler: @escaping (Result<Int?, Error>) -> Void) {
         // write to the end of the file
 
         let index = set.index(of: word)
 
         if index == NSNotFound {
             set.add(word)
-            array.append(.init(count: 1, favorite: false))
+            array.append(.init(favorite: false, count: 1))
             handler(.success(array.count - 1))
         } else {
             array[index].count += 1
@@ -29,7 +41,7 @@ class Repo {
         }
     }
 
-    func delete(word: String, handler: @escaping (Result<Int?, Error>) -> Void) {
+    public func delete(word: String, _ handler: @escaping (Result<Int?, Error>) -> Void) {
         // delete last occurence of the word in a file
 
         let index = set.index(of: word)
@@ -52,29 +64,18 @@ class Repo {
         }
     }
 
-    func favorite(word: String) {
-        update(word: word, favorite: true)
+    public func favorite(word: String, _ handler: @escaping (Result<Int?, Error>) -> Void) {
+        update(word: word, favorite: true, handler)
     }
 
-    func unfavorite(word: String) {
-        update(word: word, favorite: false)
+    public func unfavorite(word: String, _ handler: @escaping (Result<Int?, Error>) -> Void) {
+        update(word: word, favorite: false, handler)
     }
 
-    private func update(word: String, favorite: Bool) {
+    private func update(word: String, favorite: Bool, _ handler: @escaping (Result<Int?, Error>) -> Void) {
         let index = set.index(of: word)
         guard index != NSNotFound else { return }
         array[index].favorite = favorite
+        handler(.success(index))
     }
 }
-
-class Info {
-    var count: UInt
-    var favorite: Bool
-
-    init(count: UInt, favorite: Bool) {
-        self.count = count
-        self.favorite = favorite
-    }
-}
-
-

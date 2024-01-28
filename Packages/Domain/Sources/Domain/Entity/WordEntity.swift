@@ -6,12 +6,10 @@
 
 public final class WordEntity {
     public var word: WordType
-    public var favorite: Bool
-    public var count: UInt
+    public var info: WordInfoEntity
 
-    public init(word: WordType, favorite: Bool, count: UInt) {
+    public init(word: WordType, info: WordInfoEntity) {
         self.word = word
-        self.favorite = favorite
-        self.count = count
+        self.info = info
     }
 }
