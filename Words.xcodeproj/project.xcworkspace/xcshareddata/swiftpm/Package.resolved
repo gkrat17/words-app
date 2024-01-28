@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "swift-di",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/codalasolutions/swift-di",
+      "state" : {
+        "branch" : "main",
+        "revision" : "15d51864f96eb913da79a79cc96b5b2f0c2431e9"
+      }
+    }
+  ],
+  "version" : 2
+}
