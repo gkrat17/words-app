@@ -22,7 +22,7 @@ public final class DefaultAddUsecase: AddUsecase {
             switch result {
             case .success(let entity):
                 if let entity {
-                    eventSendingUsecase.send(entity: .add(entity))
+                    eventSendingUsecase.send(entity: .init(type: .add(word), index: entity))
                 }
                 handler(.success(()))
             case .failure(let error):

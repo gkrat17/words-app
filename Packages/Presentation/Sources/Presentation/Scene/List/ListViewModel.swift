@@ -14,7 +14,8 @@ final class ListViewModel {
     var query = CurrentValueSubject<String, Never>(.init())
     private(set) var page = CurrentValueSubject<Loadable<[WordType]>, Never>(.notRequested)
     private(set) var clear = PassthroughSubject<Void, Never>()
-    private(set) var list = [WordType]()
+    private var favorites = CurrentValueSubject<Set<IndexType>, Never>(.init())
+    private var list = [WordType]()
     private var loaded = false
     /* Deps */
     @Inject(container: .usecases) private var readUsecase: ReadUsecase
@@ -33,6 +34,12 @@ final class ListViewModel {
                 guard let self else { return }
                 clear.send(())
                 page.value = .loaded(list.filter(with: query))
+            }.store(in: &cancellables)
+
+        eventUsecase.publisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                self?.handle(event: $0)
             }.store(in: &cancellables)
     }
 }
@@ -68,13 +75,46 @@ fileprivate extension ListViewModel {
             case .success(let result):
                 if result.isEmpty {
                     loaded = true
-                    return
+                } else {
+                    list.append(contentsOf: result)
+                    page.value = .loaded(result.filter(with: query.value))
                 }
-                list.append(contentsOf: result)
-                page.value = .loaded(result.filter(with: query.value))
             case .failure(let error):
                 print(error)
             }
         }
+    }
+
+    func handle(event: EventEntity) {
+        switch event.type {
+        case .add(let word): handleEventAdd(word, event.index)
+        case .delete:        handleEventDelete(event.index)
+        case .favorite:      handleEventFavorite(event.index)
+        case .unfavorite:    handleEventUnfavorite(event.index)
+        }
+    }
+
+    func handleEventAdd(_ word: WordType, _ index: IndexType) {
+        let count = list.count
+        if index == count {
+            list.append(word)
+        } else if index < count {
+            list.insert(word, at: index)
+        }
+    }
+
+    func handleEventDelete(_ index: IndexType) {
+        if index < list.count {
+            list.remove(at: index)
+            favorites.value.remove(index)
+        }
+    }
+
+    func handleEventFavorite(_ index: IndexType) {
+        favorites.value.insert(index)
+    }
+
+    func handleEventUnfavorite(_ index: IndexType) {
+        favorites.value.remove(index)
     }
 }

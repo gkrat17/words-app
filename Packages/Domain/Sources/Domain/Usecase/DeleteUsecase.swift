@@ -22,7 +22,7 @@ public final class DefaultDeleteUsecase: DeleteUsecase {
             switch result {
             case .success(let entity):
                 if let entity {
-                    eventSendingUsecase.send(entity: .delete(entity))
+                    eventSendingUsecase.send(entity: .init(type: .delete, index: entity))
                 }
                 handler(.success(()))
             case .failure(let error):

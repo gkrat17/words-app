@@ -28,7 +28,7 @@ public final class DefaultFavoriteUsecase: FavoriteUsecase {
             switch result {
             case .success(let entity):
                 if let entity {
-                    eventSendingUsecase.send(entity: .favorite(entity))
+                    eventSendingUsecase.send(entity: .init(type: .favorite, index: entity))
                 }
                 handler(.success(()))
             case .failure(let error):
@@ -43,7 +43,7 @@ public final class DefaultFavoriteUsecase: FavoriteUsecase {
             switch result {
             case .success(let entity):
                 if let entity {
-                    eventSendingUsecase.send(entity: .unfavorite(entity))
+                    eventSendingUsecase.send(entity: .init(type: .unfavorite, index: entity))
                 }
                 handler(.success(()))
             case .failure(let error):

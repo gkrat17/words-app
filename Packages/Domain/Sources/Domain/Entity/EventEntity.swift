@@ -1,12 +1,15 @@
 //
 //  EventEntity.swift
 //
-//  Created by giorgi kratsashvili on 28.01.24.
+//  Created by giorgi kratsashvili on 29.01.24.
 //
 
-public enum EventEntity {
-    case add(IndexType)
-    case delete(IndexType)
-    case favorite(IndexType)
-    case unfavorite(IndexType)
+public final class EventEntity {
+    public let type: EventType
+    public let index: IndexType
+
+    public init(type: EventType, index: IndexType) {
+        self.type = type
+        self.index = index
+    }
 }
