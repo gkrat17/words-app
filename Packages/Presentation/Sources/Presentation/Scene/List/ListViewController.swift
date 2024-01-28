@@ -20,7 +20,7 @@ final class ListViewController: UIViewController {
     private var tableView = UITableView(frame: .zero, style: .insetGrouped)
     private var dataSource: UITableViewDiffableDataSource<Section, WordType>!
     private var snapshot: NSDiffableDataSourceSnapshot<Section, WordType>!
-    private var cancellable: AnyCancellable?
+    private var cancellables = Set<AnyCancellable>()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,17 +68,22 @@ fileprivate extension ListViewController {
 
     func configureSnapshot() {
         snapshot = .init()
-        snapshot.appendSections([.main])
+        snapshot.appendSections([.favorites, .main])
     }
 
     func bind() {
-        cancellable = viewModel.$latestPage
+        viewModel.latestPage
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
                 guard let self, case .loaded(let result) = $0 else { return }
                 snapshot.appendItems(result.map { $0.word })
                 dataSource.apply(snapshot, animatingDifferences: true)
-            }
+            }.store(in: &cancellables)
+
+        viewModel.clear
+            .sink { [weak self] _ in
+                self?.snapshot.deleteAllItems()
+            }.store(in: &cancellables)
     }
 }
 
