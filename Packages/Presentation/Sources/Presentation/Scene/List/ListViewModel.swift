@@ -87,34 +87,34 @@ fileprivate extension ListViewModel {
 
     func handle(event: EventEntity) {
         switch event.type {
-        case .add(let word): handleEventAdd(word, event.index)
-        case .delete:        handleEventDelete(event.index)
-        case .favorite:      handleEventFavorite(event.index)
-        case .unfavorite:    handleEventUnfavorite(event.index)
+        case .add:        handleAdd(event: event)
+        case .delete:     handleDelete(event: event)
+        case .favorite:   handleFavorite(event: event)
+        case .unfavorite: handleUnfavorite(event: event)
         }
     }
 
-    func handleEventAdd(_ word: WordType, _ index: IndexType) {
+    func handleAdd(event: EventEntity) {
         let count = list.count
-        if index == count {
-            list.append(word)
-        } else if index < count {
-            list.insert(word, at: index)
+        if event.index == count {
+            list.append(event.word)
+        } else if event.index < count {
+            list.insert(event.word, at: event.index)
         }
     }
 
-    func handleEventDelete(_ index: IndexType) {
-        if index < list.count {
-            list.remove(at: index)
-            favorites.value.remove(index)
+    func handleDelete(event: EventEntity) {
+        if event.index < list.count {
+            list.remove(at: event.index)
         }
+        handleUnfavorite(event: event)
     }
 
-    func handleEventFavorite(_ index: IndexType) {
-        favorites.value.insert(index)
+    func handleFavorite(event: EventEntity) {
+        favorites.value.insert(event.index)
     }
 
-    func handleEventUnfavorite(_ index: IndexType) {
-        favorites.value.remove(index)
+    func handleUnfavorite(event: EventEntity) {
+        favorites.value.remove(event.index)
     }
 }

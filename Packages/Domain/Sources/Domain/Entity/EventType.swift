@@ -5,7 +5,7 @@
 //
 
 public enum EventType {
-    case add(WordType)
+    case add
     case delete
     case favorite
     case unfavorite

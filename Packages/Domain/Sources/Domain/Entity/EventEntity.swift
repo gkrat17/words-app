@@ -7,9 +7,11 @@
 public final class EventEntity {
     public let type: EventType
     public let index: IndexType
+    public let word: WordType
 
-    public init(type: EventType, index: IndexType) {
+    public init(type: EventType, index: IndexType, word: WordType) {
         self.type = type
         self.index = index
+        self.word = word
     }
 }
