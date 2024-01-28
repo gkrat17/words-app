@@ -18,6 +18,7 @@
 		C70135F02B6673AD0006C850 /* Data in Frameworks */ = {isa = PBXBuildFile; productRef = C70135EF2B6673AD0006C850 /* Data */; };
 		C70135F22B6673AD0006C850 /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = C70135F12B6673AD0006C850 /* Domain */; };
 		C70135F42B6673AD0006C850 /* Presentation in Frameworks */ = {isa = PBXBuildFile; productRef = C70135F32B6673AD0006C850 /* Presentation */; };
+		C72F08DE2B66CF10009FF841 /* words.txt in Resources */ = {isa = PBXBuildFile; fileRef = C72F08DD2B66CF10009FF841 /* words.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +53,7 @@
 		C70135E82B666EAA0006C850 /* Data */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Data; sourceTree = "<group>"; };
 		C70135E92B666EC40006C850 /* Domain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Domain; sourceTree = "<group>"; };
 		C70135EA2B666F120006C850 /* Presentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Presentation; sourceTree = "<group>"; };
+		C72F08DD2B66CF10009FF841 /* words.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = words.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +113,7 @@
 				C70135B72B666E660006C850 /* AppDelegate.swift */,
 				C70135B92B666E660006C850 /* SceneDelegate.swift */,
 				C70135C02B666E680006C850 /* Assets.xcassets */,
+				C72F08DD2B66CF10009FF841 /* words.txt */,
 				C70135C22B666E680006C850 /* LaunchScreen.storyboard */,
 				C70135C52B666E680006C850 /* Info.plist */,
 			);
@@ -265,6 +268,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C70135C42B666E680006C850 /* LaunchScreen.storyboard in Resources */,
+				C72F08DE2B66CF10009FF841 /* words.txt in Resources */,
 				C70135C12B666E680006C850 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

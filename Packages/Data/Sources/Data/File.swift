@@ -12,7 +12,27 @@ public class Repo: AddRepo, DeleteRepo, FavoriteRepo, ReadRepo {
     var set = NSMutableOrderedSet()
     var array = Array<WordInfoEntity>()
 
-    public init() {}
+    public init() {
+        if let path = Bundle.main.path(forResource: "words", ofType: "txt") {
+            do {
+                let str = try String(contentsOfFile: path, encoding: .utf8)
+                let res = str.split(separator: "\n")
+                res.forEach {
+                    let s = String($0)
+                    if set.contains(s) {
+                        let i = set.index(of: s)
+                        array[i].count += 1
+                    } else {
+                        set.add(s)
+                        array.append(.init(favorite: false, count: 1))
+                    }
+                }
+            } catch let error {
+                print(error)
+                print("")
+            }
+        }
+    }
 
     public func read(startIndex: IndexType, pageMaxSize: Int, _ handler: @escaping (Result<[WordEntity], Error>) -> Void) {
         guard startIndex < set.count else {
