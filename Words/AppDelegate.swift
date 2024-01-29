@@ -15,7 +15,7 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-        let repo = Repo()
+        let repo = DefaultRepo()
 
         Domain.configure(repos: .init {
             Dependency { repo as AddRepo }

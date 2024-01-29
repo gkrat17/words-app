@@ -12,16 +12,12 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(path: "../Domain"),
-        .package(url: "https://github.com/codalasolutions/swift-di.git", branch: "main")
+        .package(path: "../Domain")
     ],
     targets: [
         .target(
             name: "Data",
-            dependencies: [
-                "Domain",
-                .product(name: "DI", package: "swift-di")
-            ]
+            dependencies: ["Domain"]
         ),
         .testTarget(
             name: "DataTests",
