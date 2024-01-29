@@ -5,5 +5,5 @@
 //
 
 public protocol AddRepo {
-    func add(word: WordType, _: @escaping (Result<IndexType?, Error>) -> Void)
+    func add(word: WordType, _: @escaping (Result<WordEntity?, Error>) -> Void)
 }

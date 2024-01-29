@@ -17,7 +17,7 @@ public protocol UnfavoritingUsecase {
 }
 
 public final class DefaultFavoriteUsecase: FavoriteUsecase {
-    @Inject(container: .usecases) private var eventSendingUsecase: EventUsecase
+    @Inject(container: .usecases) private var eventSendingUsecase: EventSendingUsecase
     @Inject(container: .repos) private var favoriteRepo: FavoriteRepo
 
     public init() {}
@@ -28,7 +28,7 @@ public final class DefaultFavoriteUsecase: FavoriteUsecase {
             switch result {
             case .success(let entity):
                 if let entity {
-                    eventSendingUsecase.send(entity: .init(type: .favorite, index: entity, word: word))
+                    eventSendingUsecase.send(entity: .init(type: .favorite, entity: entity))
                 }
                 handler(.success(()))
             case .failure(let error):
@@ -43,7 +43,7 @@ public final class DefaultFavoriteUsecase: FavoriteUsecase {
             switch result {
             case .success(let entity):
                 if let entity {
-                    eventSendingUsecase.send(entity: .init(type: .unfavorite, index: entity, word: word))
+                    eventSendingUsecase.send(entity: .init(type: .unfavorite, entity: entity))
                 }
                 handler(.success(()))
             case .failure(let error):

@@ -50,14 +50,14 @@ fileprivate extension ListViewController {
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         tableView.delegate = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "identifier")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "id")
     }
 
     func configureDataSource() {
         dataSource = UITableViewDiffableDataSource
             <SectionType, WordType>(tableView: tableView) {
                 (tableView: UITableView, indexPath: IndexPath, item: WordType) -> UITableViewCell? in
-            let cell = tableView.dequeueReusableCell(withIdentifier: "identifier", for: indexPath)
+            let cell = tableView.dequeueReusableCell(withIdentifier: "id", for: indexPath)
             cell.textLabel?.text = item
             return cell
         }
@@ -66,7 +66,7 @@ fileprivate extension ListViewController {
 
     func configureSnapshot() {
         snapshot = .init()
-        snapshot.appendSections([.favorites, .main])
+        snapshot.appendSections([.favorites, .nonfavorites])
     }
 
     func bind() {
@@ -74,7 +74,7 @@ fileprivate extension ListViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
                 guard let self, case .loaded(let result) = $0 else { return }
-                snapshot.appendItems(result, toSection: .main)
+                snapshot.appendItems(result, toSection: .nonfavorites)
                 dataSource.apply(snapshot, animatingDifferences: true)
             }.store(in: &cancellables)
 

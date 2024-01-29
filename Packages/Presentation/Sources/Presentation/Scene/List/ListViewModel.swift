@@ -40,7 +40,7 @@ extension ListViewModel {
     }
 
     func cellWillDisplay(at indexPath: IndexPath) {
-        if indexPath.section == SectionType.main.rawValue,
+        if indexPath.section == SectionType.nonfavorites.rawValue,
            favorites.count + indexPath.row == nonfavorites.count - 1 {
             tryFetchNextPage()
         }
@@ -70,17 +70,12 @@ fileprivate extension ListViewModel {
         readUsecase.read(startIndex: count, pageMaxSize: 20) { [weak self] result in
             guard let self else { return }
             switch result {
-            case .success(let result):
-                if result.isEmpty {
+            case .success(let entity):
+                if entity.isEmpty {
                     loaded = true
                 } else {
-                    let count = count
-                    result
-                        .enumerated()
-                        .forEach {
-                            self.nonfavorites.add(FavoriteModel(word: $1, index: count + $0))
-                        }
-                    page.value = .loaded(result)
+                    entity.forEach { self.nonfavorites.add($0) }
+                    page.value = .loaded(entity.map { $0.word })
                 }
             case .failure(let error): print(error)
             }
@@ -97,65 +92,53 @@ fileprivate extension ListViewModel {
     }
 
     func handleAdd(event: EventEntity) {
-        guard event.index == count else { return }
-        nonfavorites.add(FavoriteModel(word: event.word, index: event.index))
-        page.send(.loaded([event.word]))
+        guard event.entity.index == count else { return }
+        nonfavorites.add(event.entity)
+        page.send(.loaded([event.entity.word]))
     }
 
     func handleDelete(event: EventEntity) {
-        let model = FavoriteModel(word: event.word, index: event.index)
-        favorites.remove(model)
-        nonfavorites.remove(model)
-        remove.send(event.word)
+        favorites.remove(event.entity)
+        nonfavorites.remove(event.entity)
+        remove.send(event.entity.word)
     }
 
     func handleFavorite(event: EventEntity) {
-        let favorite = FavoriteModel(word: event.word, index: event.index)
+        replace(entity: event.entity, from: &nonfavorites, to: &favorites, section: .favorites)
+    }
 
-        guard !favorites.contains(favorite), nonfavorites.contains(favorite) else { return }
+    func handleUnfavorite(event: EventEntity) {
+        replace(entity: event.entity, from: &favorites, to: &nonfavorites, section: .nonfavorites)
+    }
 
-        let insertionIndex = favorites.insertionIndex(of: favorite) {
-            ($0 as! FavoriteModel).index < ($1 as! FavoriteModel).index
+    func replace(
+        entity: WordEntity,
+        from: inout NSMutableOrderedSet,
+        to: inout NSMutableOrderedSet,
+        section: SectionType
+    ) {
+        guard from.contains(entity), !to.contains(entity) else { return }
+
+        let insertionIndex = to.insertionIndex(of: entity) {
+            ($0 as! WordEntity).index < ($1 as! WordEntity).index
         }
 
         var neighbor: ReplaceModel.NeighborType? = nil
         if insertionIndex == .zero {
             if favorites.count > .zero {
-                neighbor = .before((favorites[.zero] as! FavoriteModel).word)
+                neighbor = .before((to[.zero] as! WordEntity).word)
             }
         } else {
-            neighbor = .after((favorites[insertionIndex - 1] as! FavoriteModel).word)
+            neighbor = .after((to[insertionIndex - 1] as! WordEntity).word)
         }
 
-        favorites.insert(favorite, at: insertionIndex)
-        nonfavorites.remove(favorite)
+        to.insert(entity, at: insertionIndex)
+        from.remove(entity)
 
-        replace.send(.init(section: .favorites, item: favorite.word, neighbor: neighbor))
+        replace.send(.init(section: section, item: entity.word, neighbor: neighbor))
     }
 
-    func handleUnfavorite(event: EventEntity) {
-        let favorite = FavoriteModel(word: event.word, index: event.index)
-
-        guard favorites.contains(favorite), !nonfavorites.contains(favorite) else { return }
-
-        let insertionIndex = nonfavorites.insertionIndex(of: favorite) {
-            ($0 as! FavoriteModel).index < ($1 as! FavoriteModel).index
-        }
-
-        var neighbor: ReplaceModel.NeighborType? = nil
-        if insertionIndex == .zero {
-            if nonfavorites.count > .zero {
-                neighbor = .before((nonfavorites[.zero] as! FavoriteModel).word)
-            }
-        } else {
-            neighbor = .after((nonfavorites[insertionIndex - 1] as! FavoriteModel).word)
-        }
-
-        nonfavorites.insert(favorite, at: insertionIndex)
-        favorites.remove(favorite)
-
-        replace.send(.init(section: .main, item: favorite.word, neighbor: neighbor))
+    var count: Int {
+        favorites.count + nonfavorites.count
     }
-
-    var count: Int { favorites.count + nonfavorites.count }
 }

@@ -6,5 +6,5 @@
 
 enum SectionType: Int {
     case favorites
-    case main
+    case nonfavorites
 }

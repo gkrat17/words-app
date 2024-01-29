@@ -11,7 +11,7 @@ public protocol DeleteUsecase {
 }
 
 public final class DefaultDeleteUsecase: DeleteUsecase {
-    @Inject(container: .usecases) private var eventSendingUsecase: EventUsecase
+    @Inject(container: .usecases) private var eventSendingUsecase: EventSendingUsecase
     @Inject(container: .repos) private var deleteRepo: DeleteRepo
 
     public init() {}
@@ -22,7 +22,7 @@ public final class DefaultDeleteUsecase: DeleteUsecase {
             switch result {
             case .success(let entity):
                 if let entity {
-                    eventSendingUsecase.send(entity: .init(type: .delete, index: entity, word: word))
+                    eventSendingUsecase.send(entity: .init(type: .delete, entity: entity))
                 }
                 handler(.success(()))
             case .failure(let error):
