@@ -104,17 +104,17 @@ fileprivate extension ListViewModel {
     }
 
     func handleFavorite(event: EventEntity) {
-        replace(entity: event.entity, from: &nonfavorites, to: &favorites, section: .favorites)
+        replace(entity: event.entity, from: nonfavorites, to: favorites, section: .favorites)
     }
 
     func handleUnfavorite(event: EventEntity) {
-        replace(entity: event.entity, from: &favorites, to: &nonfavorites, section: .nonfavorites)
+        replace(entity: event.entity, from: favorites, to: nonfavorites, section: .nonfavorites)
     }
 
     func replace(
         entity: WordEntity,
-        from: inout NSMutableOrderedSet,
-        to: inout NSMutableOrderedSet,
+        from: NSMutableOrderedSet,
+        to: NSMutableOrderedSet,
         section: SectionType
     ) {
         guard from.contains(entity), !to.contains(entity) else { return }

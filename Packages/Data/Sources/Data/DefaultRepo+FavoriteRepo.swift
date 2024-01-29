@@ -18,7 +18,7 @@ extension DefaultRepo: FavoriteRepo {
 
     private func update(word: String, favorite: Bool, _ handler: @escaping (Result<WordEntity?, Error>) -> Void) {
         let index = keys.index(of: word)
-        guard index != NSNotFound else { return }
+        guard index != NSNotFound else { return handler(.failure(ErrorEntity.error)) }
         values[index].favorite = favorite
         handler(.success(.init(word: word, index: index)))
     }

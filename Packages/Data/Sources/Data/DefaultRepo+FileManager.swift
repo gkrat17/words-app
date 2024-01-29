@@ -16,8 +16,8 @@ extension DefaultRepo {
             return
         }
 
-        guard let path = bundle.path(forResource: "words", ofType: "txt")
-        else { fatalError("can't find words.txt file") }
+        guard let path = bundle.path(forResource: fileName, ofType: fileExtension)
+        else { fatalError("can't find file") }
 
         let string = try String(contentsOfFile: path, encoding: .utf8)
         try string.write(to: url, atomically: true, encoding: .utf8)
@@ -43,13 +43,15 @@ extension DefaultRepo {
 }
 
 fileprivate extension DefaultRepo {
-    var filename: String { "words.txt" }
+    var fileName: String { "words" }
+    var fileExtension: String { "txt" }
+    var fullFileName: String { "\(fileName).\(fileExtension)" }
 
     var url: URL {
         guard let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
             fatalError("unable to access documents directory.")
         }
-        return documentsDirectory.appendingPathComponent(filename)
+        return documentsDirectory.appendingPathComponent(fullFileName)
     }
 
     func process(string: String) {

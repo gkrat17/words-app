@@ -33,7 +33,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         })
 
         let event = DefaultEventUsecase()
-        let favorite = DefaultFavoriteUsecase()
 
         let usecases = DependencyContainer {
             Dependency { DefaultAddUsecase() as AddUsecase }
@@ -41,13 +40,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Dependency { DefaultReadUsecase() as ReadUsecase }
             Dependency { DefaultDetailsUsecase() as InfoUsecase }
 
-            Dependency { event as EventUsecase }
             Dependency { event as EventSendingUsecase }
             Dependency { event as EventPublishingUsecase }
 
-            Dependency { favorite as FavoriteUsecase }
-            Dependency { favorite as FavoritingUsecase }
-            Dependency { favorite as UnfavoritingUsecase }
+            Dependency { DefaultFavoriteUsecase() as FavoriteUsecase }
         }
 
         Domain.configure(usecases: usecases)
