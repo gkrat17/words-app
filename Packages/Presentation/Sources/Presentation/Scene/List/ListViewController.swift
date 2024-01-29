@@ -27,9 +27,6 @@ final class ListViewController: UIViewController {
 
 fileprivate extension ListViewController {
     func configure() {
-        
-        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(showPrompt))
-                self.navigationItem.rightBarButtonItem = addButton
         configureNavigation()
         configureTableView()
         configureDataSource()
@@ -38,6 +35,8 @@ fileprivate extension ListViewController {
     }
 
     func configureNavigation() {
+        let button = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(alert))
+        navigationItem.rightBarButtonItem = button
         title = "List"
     }
 
@@ -69,34 +68,7 @@ fileprivate extension ListViewController {
         snapshot = .init()
         snapshot.appendSections([.favorites, .main])
     }
-    @objc func showPrompt() {
-            // Create an alert controller
-            let alertController = UIAlertController(title: "Enter String", message: nil, preferredStyle: .alert)
 
-            // Add a text field to the alert controller
-            alertController.addTextField { textField in
-                textField.placeholder = "Enter your string"
-            }
-
-            // Create a "Submit" action
-            let submitAction = UIAlertAction(title: "Submit", style: .default) { [weak self] _ in
-                // Handle the submission of the entered string
-                if let enteredString = alertController.textFields?.first?.text {
-                    self?.handleSubmission(enteredString)
-                }
-            }
-
-            // Add the "Submit" action to the alert controller
-            alertController.addAction(submitAction)
-
-            // Present the alert controller
-            present(alertController, animated: true, completion: nil)
-        }
-    func handleSubmission(_ enteredString: String) {
-            // Handle the submitted string, for example, print it
-        viewModel.add(word: enteredString)
-            // You can perform any further actions with the entered string here
-        }
     func bind() {
         viewModel.page
             .receive(on: DispatchQueue.main)
@@ -134,6 +106,24 @@ fileprivate extension ListViewController {
                 snapshot.deleteItems([$0])
                 dataSource.apply(snapshot, animatingDifferences: true)
             }.store(in: &cancellables)
+    }
+
+    @objc func alert() {
+        let alert = UIAlertController(title: "Enter word", message: nil, preferredStyle: .alert)
+
+        alert.addTextField {
+            $0.placeholder = "Enter word"
+        }
+
+        let action = UIAlertAction(title: "Add", style: .default) { [weak self] _ in
+            if let word = alert.textFields?.first?.text {
+                self?.viewModel.add(word: word)
+            }
+        }
+
+        alert.addAction(action)
+
+        present(alert, animated: true, completion: nil)
     }
 }
 

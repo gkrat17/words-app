@@ -63,8 +63,11 @@ extension ListViewModel {
     }
 
     func add(word: WordType) {
-        addUsecase.add(word: word) { _ in
-            {}()
+        addUsecase.add(word: word) {
+            switch $0 {
+            case .success: ()
+            case .failure(let error): print(error)
+            }
         }
     }
 }
