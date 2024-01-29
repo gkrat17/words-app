@@ -10,16 +10,11 @@ import Domain
 import UIKit
 
 final class ListViewController: UIViewController {
-    fileprivate enum Section {
-        case favorites
-        case main
-    }
-
     @Inject(container: .viewModels) private var viewModel: ListViewModel
 
     private var tableView = UITableView(frame: .zero, style: .insetGrouped)
-    private var dataSource: UITableViewDiffableDataSource<Section, WordType>!
-    private var snapshot: NSDiffableDataSourceSnapshot<Section, WordType>!
+    private var dataSource: UITableViewDiffableDataSource<SectionType, WordType>!
+    private var snapshot: NSDiffableDataSourceSnapshot<SectionType, WordType>!
     private var cancellables = Set<AnyCancellable>()
 
     override func viewDidLoad() {
@@ -57,7 +52,7 @@ fileprivate extension ListViewController {
 
     func configureDataSource() {
         dataSource = UITableViewDiffableDataSource
-            <Section, WordType>(tableView: tableView) {
+            <SectionType, WordType>(tableView: tableView) {
                 (tableView: UITableView, indexPath: IndexPath, item: WordType) -> UITableViewCell? in
             let cell = tableView.dequeueReusableCell(withIdentifier: "identifier", for: indexPath)
             cell.textLabel?.text = item
@@ -85,16 +80,16 @@ fileprivate extension ListViewController {
                 self?.snapshot.deleteAllItems()
             }.store(in: &cancellables)
 
-        viewModel.insert
+        viewModel.replace
             .sink { [weak self] in
                 guard let self else { return }
                 snapshot.deleteItems([$0.item])
                 if let neighbor = $0.neighbor {
                     switch neighbor {
-                    case .after:
-                        snapshot.insertItems([$0.item], afterItem: neighbor.word)
-                    case .before:
-                        snapshot.insertItems([$0.item], beforeItem: neighbor.word)
+                    case .after(let neighbor):
+                        snapshot.insertItems([$0.item], afterItem: neighbor)
+                    case .before(let neighbor):
+                        snapshot.insertItems([$0.item], beforeItem: neighbor)
                     }
                 } else {
                     snapshot.appendItems([$0.item], toSection: .favorites)

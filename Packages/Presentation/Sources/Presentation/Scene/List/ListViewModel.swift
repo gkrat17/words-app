@@ -14,7 +14,7 @@ final class ListViewModel {
     var query = CurrentValueSubject<String, Never>(.init())
     private(set) var page = CurrentValueSubject<Loadable<[WordType]>, Never>(.notRequested)
     private(set) var clear = PassthroughSubject<Void, Never>()
-    private(set) var insert = PassthroughSubject<InsertModel, Never>()
+    private(set) var replace = PassthroughSubject<ReplaceModel, Never>()
     private var favorites = NSMutableOrderedSet()
     private var list = [WordType]()
     private var loaded = false
@@ -119,7 +119,7 @@ fileprivate extension ListViewModel {
             ($0 as! FavoriteModel).index < ($1 as! FavoriteModel).index
         }
 
-        var neighbor: InsertModel.Neighbor? = nil
+        var neighbor: ReplaceModel.NeighborType? = nil
         if insertionIndex == .zero {
             if favorites.count > .zero {
                 neighbor = .before((favorites[.zero] as! FavoriteModel).word)
@@ -130,7 +130,7 @@ fileprivate extension ListViewModel {
 
         favorites.insert(favorite, at: insertionIndex)
 
-        insert.send(.init(item: favorite.word, neighbor: neighbor))
+        replace.send(.init(section: .favorites, item: favorite.word, neighbor: neighbor))
     }
 
     func handleUnfavorite(event: EventEntity) {
