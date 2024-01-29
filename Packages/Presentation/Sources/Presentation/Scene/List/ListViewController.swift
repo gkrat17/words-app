@@ -58,7 +58,7 @@ fileprivate extension ListViewController {
             cell.textLabel?.text = item
             return cell
         }
-        self.dataSource.defaultRowAnimation = .fade
+        dataSource.defaultRowAnimation = .fade
     }
 
     func configureSnapshot() {
@@ -71,7 +71,7 @@ fileprivate extension ListViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
                 guard let self, case .loaded(let result) = $0 else { return }
-                snapshot.appendItems(result)
+                snapshot.appendItems(result, toSection: .main)
                 dataSource.apply(snapshot, animatingDifferences: true)
             }.store(in: &cancellables)
 
@@ -94,6 +94,13 @@ fileprivate extension ListViewController {
                 } else {
                     snapshot.appendItems([$0.item], toSection: .favorites)
                 }
+                dataSource.apply(snapshot, animatingDifferences: true)
+            }.store(in: &cancellables)
+
+        viewModel.remove
+            .sink { [weak self] in
+                guard let self else { return }
+                snapshot.deleteItems([$0])
                 dataSource.apply(snapshot, animatingDifferences: true)
             }.store(in: &cancellables)
     }

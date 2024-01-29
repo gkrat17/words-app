@@ -15,6 +15,7 @@ final class ListViewModel {
     private(set) var page = CurrentValueSubject<Loadable<[WordType]>, Never>(.notRequested)
     private(set) var clear = PassthroughSubject<Void, Never>()
     private(set) var replace = PassthroughSubject<ReplaceModel, Never>()
+    private(set) var remove = PassthroughSubject<WordType, Never>()
     private var favorites = NSMutableOrderedSet()
     private var list = [WordType]()
     private var loaded = false
@@ -95,19 +96,16 @@ fileprivate extension ListViewModel {
     }
 
     func handleAdd(event: EventEntity) {
-        let count = list.count
-        if event.index == count {
-            list.append(event.word)
-        } else if event.index < count {
-            list.insert(event.word, at: event.index)
-        }
+        guard event.index == list.count else { return }
+        list.append(event.word)
+        page.send(.loaded([event.word]))
     }
 
     func handleDelete(event: EventEntity) {
         if event.index < list.count {
             list.remove(at: event.index)
         }
-        handleUnfavorite(event: event)
+        remove.send(event.word)
     }
 
     func handleFavorite(event: EventEntity) {
@@ -135,8 +133,18 @@ fileprivate extension ListViewModel {
 
     func handleUnfavorite(event: EventEntity) {
         let favorite = FavoriteModel(word: event.word, index: event.index)
-        guard favorites.contains(favorite) else { return }
+
+        guard favorites.contains(favorite), favorite.index < list.count else { return }
+
         favorites.remove(favorite)
+
+        let neighbor: ReplaceModel.NeighborType = if favorite.index == .zero {
+            .before(list[.zero])
+        } else {
+            .after(list[favorite.index - 1])
+        }
+
+        replace.send(.init(section: .main, item: favorite.word, neighbor: neighbor))
     }
 }
 
