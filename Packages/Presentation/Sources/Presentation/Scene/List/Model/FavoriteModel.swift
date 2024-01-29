@@ -16,11 +16,11 @@ struct FavoriteModel: Hashable {
     }
 
     static func == (lhs: FavoriteModel, rhs: FavoriteModel) -> Bool {
-        lhs.word == rhs.word /* && lhs.index == rhs.index*/
+        lhs.word == rhs.word && lhs.index == rhs.index
     }
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(word)
-        // hasher.combine(index)
+        hasher.combine(index)
     }
 }

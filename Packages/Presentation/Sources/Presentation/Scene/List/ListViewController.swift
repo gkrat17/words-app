@@ -78,11 +78,6 @@ fileprivate extension ListViewController {
                 dataSource.apply(snapshot, animatingDifferences: true)
             }.store(in: &cancellables)
 
-        viewModel.clear
-            .sink { [weak self] _ in
-                self?.snapshot.deleteAllItems()
-            }.store(in: &cancellables)
-
         viewModel.replace
             .sink { [weak self] in
                 guard let self else { return }
