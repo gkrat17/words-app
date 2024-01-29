@@ -12,7 +12,7 @@ extension DefaultRepo: DeleteRepo {
         do {
             try deleteLast(string: word)
         } catch {
-            handler(.failure(ErrorEntity.error))
+            return handler(.failure(ErrorEntity.error))
         }
 
         let index = keys.index(of: word)

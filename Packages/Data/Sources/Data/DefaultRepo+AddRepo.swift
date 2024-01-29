@@ -12,7 +12,7 @@ extension DefaultRepo: AddRepo {
         do {
             try append(string: word)
         } catch {
-            handler(.failure(ErrorEntity.error))
+            return handler(.failure(ErrorEntity.error))
         }
 
         let index = keys.index(of: word)
