@@ -34,8 +34,7 @@ extension DetailsViewModel {
             case .success(let entity):
                 count.value = entity.count
                 favorite.value = entity.favorite
-            case .failure(let error):
-                print(error)
+            case .failure(let error): print(error)
             }
         }
     }
@@ -52,8 +51,7 @@ extension DetailsViewModel {
                     isEnabledAdd.value = true
                     return
                 }
-            case .failure(let error):
-                print(error)
+            case .failure(let error): print(error)
             }
             enable(true)
         }
@@ -62,10 +60,8 @@ extension DetailsViewModel {
     func favorite(isOn: Bool) {
         let handler: ((Result<Void, Error>) -> Void) = {
             switch $0 {
-            case .success:
-                print("")
-            case .failure(let error):
-                print(error)
+            case .success: ()
+            case .failure(let error): print(error)
             }
         }
         if isOn {
@@ -82,8 +78,7 @@ extension DetailsViewModel {
             switch $0 {
             case .success:
                 count.value += 1
-            case .failure(let error):
-                print(error)
+            case .failure(let error): print(error)
             }
             enable(true)
         }

@@ -139,7 +139,7 @@ fileprivate extension ListViewController {
 
 extension ListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        viewModel.cellWillDisplay(at: indexPath.row)
+        viewModel.cellWillDisplay(at: indexPath)
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

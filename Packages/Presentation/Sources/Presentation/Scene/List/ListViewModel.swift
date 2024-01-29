@@ -51,8 +51,9 @@ extension ListViewModel {
         tryFetchNextPage()
     }
 
-    func cellWillDisplay(at index: Int) {
-        if index == list.count - 1 {
+    func cellWillDisplay(at indexPath: IndexPath) {
+        if indexPath.section == SectionType.main.rawValue,
+           favorites.count + indexPath.row == list.count - 1 {
             tryFetchNextPage()
         }
     }
@@ -85,8 +86,7 @@ fileprivate extension ListViewModel {
                     list.append(contentsOf: result)
                     page.value = .loaded(result.filter(with: query.value))
                 }
-            case .failure(let error):
-                print(error)
+            case .failure(let error): print(error)
             }
         }
     }
@@ -135,6 +135,7 @@ fileprivate extension ListViewModel {
 
         replace.send(.init(section: .favorites, item: favorite.word, neighbor: neighbor))
     }
+
     func handleUnfavorite(event: EventEntity) {
         let favorite = FavoriteModel(word: event.word, index: event.index)
 
@@ -149,23 +150,5 @@ fileprivate extension ListViewModel {
         }
 
         replace.send(.init(section: .main, item: favorite.word, neighbor: neighbor))
-    }
-}
-
-extension NSMutableOrderedSet {
-    func insertionIndex(of elem: Element, isOrderedBefore: (Element, Element) -> Bool) -> Int {
-        var lo = 0
-        var hi = self.count - 1
-        while lo <= hi {
-            let mid = (lo + hi)/2
-            if isOrderedBefore(self[mid], elem) {
-                lo = mid + 1
-            } else if isOrderedBefore(elem, self[mid]) {
-                hi = mid - 1
-            } else {
-                return mid // found at position mid
-            }
-        }
-        return lo // not found, would be inserted at position lo
     }
 }
