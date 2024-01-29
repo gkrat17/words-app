@@ -14,11 +14,10 @@ public struct WordEntity: Hashable {
     }
 
     public static func == (lhs: WordEntity, rhs: WordEntity) -> Bool {
-        lhs.word == rhs.word && lhs.index == rhs.index
+        lhs.word == rhs.word
     }
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(word)
-        hasher.combine(index)
     }
 }

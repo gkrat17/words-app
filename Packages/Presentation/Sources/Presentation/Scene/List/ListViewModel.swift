@@ -92,7 +92,7 @@ fileprivate extension ListViewModel {
     }
 
     func handleAdd(event: EventEntity) {
-        guard event.entity.index == count else { return }
+        guard loaded else { return }
         nonfavorites.add(event.entity)
         page.send(.loaded([event.entity.word]))
     }

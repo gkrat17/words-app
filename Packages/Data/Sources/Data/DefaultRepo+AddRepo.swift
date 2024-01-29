@@ -20,7 +20,8 @@ extension DefaultRepo: AddRepo {
         if index == NSNotFound {
             keys.add(word)
             values.append(.init(favorite: false, count: 1))
-            handler(.success(.init(word: word, index: values.count - 1)))
+            _index += 1
+            handler(.success(.init(word: word, index: _index)))
         } else {
             values[index].count += 1
             handler(.success(nil))

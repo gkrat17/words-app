@@ -12,6 +12,7 @@ public class DefaultRepo {
     let fileManager: FileManager
     var keys = NSMutableOrderedSet()
     var values = Array<WordInfoEntity>()
+    var _index: IndexType = .zero
 
     public init(bundle: Bundle = .main, fileManager: FileManager = .default) {
         self.bundle = bundle
