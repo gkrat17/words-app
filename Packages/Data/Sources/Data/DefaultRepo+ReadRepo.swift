@@ -10,8 +10,7 @@ import Foundation
 extension DefaultRepo: ReadRepo {
     public func read(startIndex: Int, pageMaxSize: Int, _ handler: @escaping (Result<[WordEntity], Error>) -> Void) {
         guard startIndex < keys.count else {
-            handler(.success([]))
-            return
+            return handler(.success([]))
         }
         let endIndex = min(startIndex - 1 + pageMaxSize, keys.count - 1)
         var result = [WordEntity]()
