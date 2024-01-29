@@ -20,7 +20,7 @@ final class ListViewModel {
     /* Deps */
     @Inject(container: .usecases) private var readUsecase: ReadUsecase
     @Inject(container: .usecases) private var addUsecase: AddUsecase
-    @Inject(container: .usecases) private var eventUsecase: EventUsecase
+    @Inject(container: .usecases) private var eventUsecase: EventPublishingUsecase
     @Inject(container: .coordinators) private var coordinator: ListCoordinator
     /* Misc */
     private var cancellable: AnyCancellable?
