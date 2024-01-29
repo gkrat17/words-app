@@ -23,6 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Dependency { repo as DeleteRepo }
             Dependency { repo as FavoriteRepo }
             Dependency { repo as ReadRepo }
+            Dependency { repo as InfoRepo }
         })
         let usecases = DependencyContainer {
             Dependency { DefaultAddUsecase() as AddUsecase }
@@ -30,6 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Dependency { DefaultEventUsecase() as EventUsecase }
             Dependency { DefaultFavoriteUsecase() as FavoriteUsecase }
             Dependency { DefaultReadUsecase() as ReadUsecase }
+            Dependency { DefaultDetailsUsecase() as InfoUsecase }
         }
         Domain.configure(usecases: usecases)
         Presentation.configure(usecases: usecases)

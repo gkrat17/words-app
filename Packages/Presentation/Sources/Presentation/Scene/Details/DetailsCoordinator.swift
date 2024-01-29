@@ -17,6 +17,7 @@ final class DefaultDetailsCoordinator: DetailsCoordinator {
 
     func start(with entity: WordType) {
         let viewController = DetailsViewController()
+        viewController.viewModel.word = entity
         navigationController.pushViewController(viewController, animated: true)
     }
 }

@@ -11,7 +11,7 @@ public protocol AddUsecase {
 }
 
 public final class DefaultAddUsecase: AddUsecase {
-    @Inject(container: .usecases) private var eventSendingUsecase: EventSendingUsecase
+    @Inject(container: .usecases) private var eventSendingUsecase: EventUsecase
     @Inject(container: .repos) private var addRepo: AddRepo
 
     public init() {}

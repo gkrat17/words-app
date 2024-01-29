@@ -8,7 +8,7 @@
 import Foundation
 import Domain
 
-public class Repo: AddRepo, DeleteRepo, FavoriteRepo, ReadRepo {
+public class Repo: AddRepo, DeleteRepo, FavoriteRepo, ReadRepo, InfoRepo {
     var set = NSMutableOrderedSet()
     var array = Array<WordInfoEntity>()
 
@@ -31,6 +31,17 @@ public class Repo: AddRepo, DeleteRepo, FavoriteRepo, ReadRepo {
                 print(error)
                 print("")
             }
+        }
+    }
+
+    public func info(of word: WordType, _ handler: @escaping (Result<WordInfoEntity, Error>) -> Void) {
+        let index = set.index(of: word)
+
+        if index == NSNotFound {
+            handler(.failure(ErrorEntity.error))
+        } else {
+            array[index].count += 1
+            handler(.success(array[index]))
         }
     }
 

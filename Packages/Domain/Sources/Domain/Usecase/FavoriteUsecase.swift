@@ -17,7 +17,7 @@ public protocol UnfavoritingUsecase {
 }
 
 public final class DefaultFavoriteUsecase: FavoriteUsecase {
-    @Inject(container: .usecases) private var eventSendingUsecase: EventSendingUsecase
+    @Inject(container: .usecases) private var eventSendingUsecase: EventUsecase
     @Inject(container: .repos) private var favoriteRepo: FavoriteRepo
 
     public init() {}

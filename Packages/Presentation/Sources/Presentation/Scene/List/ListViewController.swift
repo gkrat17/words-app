@@ -19,6 +19,7 @@ final class ListViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewModel.configure()
         configure()
         viewModel.viewDidLoad()
     }
@@ -26,6 +27,9 @@ final class ListViewController: UIViewController {
 
 fileprivate extension ListViewController {
     func configure() {
+        
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(showPrompt))
+                self.navigationItem.rightBarButtonItem = addButton
         configureNavigation()
         configureTableView()
         configureDataSource()
@@ -65,7 +69,34 @@ fileprivate extension ListViewController {
         snapshot = .init()
         snapshot.appendSections([.favorites, .main])
     }
+    @objc func showPrompt() {
+            // Create an alert controller
+            let alertController = UIAlertController(title: "Enter String", message: nil, preferredStyle: .alert)
 
+            // Add a text field to the alert controller
+            alertController.addTextField { textField in
+                textField.placeholder = "Enter your string"
+            }
+
+            // Create a "Submit" action
+            let submitAction = UIAlertAction(title: "Submit", style: .default) { [weak self] _ in
+                // Handle the submission of the entered string
+                if let enteredString = alertController.textFields?.first?.text {
+                    self?.handleSubmission(enteredString)
+                }
+            }
+
+            // Add the "Submit" action to the alert controller
+            alertController.addAction(submitAction)
+
+            // Present the alert controller
+            present(alertController, animated: true, completion: nil)
+        }
+    func handleSubmission(_ enteredString: String) {
+            // Handle the submitted string, for example, print it
+        viewModel.add(word: enteredString)
+            // You can perform any further actions with the entered string here
+        }
     func bind() {
         viewModel.page
             .receive(on: DispatchQueue.main)
@@ -112,6 +143,6 @@ extension ListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        viewModel.didSelectItemAt(at: indexPath)
+        viewModel.didSelect(word: dataSource.itemIdentifier(for: indexPath)!)
     }
 }

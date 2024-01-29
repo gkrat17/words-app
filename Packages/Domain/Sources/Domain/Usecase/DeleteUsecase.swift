@@ -7,16 +7,16 @@
 import DI
 
 public protocol DeleteUsecase {
-    func add(word: WordType, _: @escaping (Result<Void, Error>) -> Void)
+    func delete(word: WordType, _: @escaping (Result<Void, Error>) -> Void)
 }
 
 public final class DefaultDeleteUsecase: DeleteUsecase {
-    @Inject(container: .usecases) private var eventSendingUsecase: EventSendingUsecase
+    @Inject(container: .usecases) private var eventSendingUsecase: EventUsecase
     @Inject(container: .repos) private var deleteRepo: DeleteRepo
 
     public init() {}
 
-    public func add(word: WordType, _ handler: @escaping (Result<Void, Error>) -> Void) {
+    public func delete(word: WordType, _ handler: @escaping (Result<Void, Error>) -> Void) {
         deleteRepo.delete(word: word) { [weak self] result in
             guard let self else { return }
             switch result {

@@ -21,6 +21,7 @@ final class ListViewModel {
     private var loaded = false
     /* Deps */
     @Inject(container: .usecases) private var readUsecase: ReadUsecase
+    @Inject(container: .usecases) private var addUsecase: AddUsecase
     @Inject(container: .usecases) private var eventUsecase: EventUsecase
     @Inject(container: .coordinators) private var coordinator: ListCoordinator
     /* Misc */
@@ -28,6 +29,7 @@ final class ListViewModel {
 
     func configure() {
         query
+            .dropFirst()
             .debounce(for: 0.5, scheduler: DispatchQueue.main)
             .removeDuplicates()
             .sink { [weak self] query in
@@ -55,11 +57,14 @@ extension ListViewModel {
         }
     }
 
-    func didSelectItemAt(at indexPath: IndexPath) {
-//        let index = indexPath.row + (indexPath.section == .zero ? .zero : favorites.count)
-//        guard index < list.count else { return }
-//        let entity = list[index]
-//        coordinator.on(word: entity)
+    func didSelect(word: WordType) {
+        coordinator.on(word: word)
+    }
+
+    func add(word: WordType) {
+        addUsecase.add(word: word) { _ in
+            {}()
+        }
     }
 }
 
