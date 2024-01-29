@@ -125,7 +125,7 @@ fileprivate extension ListViewModel {
 
         var neighbor: ReplaceModel.NeighborType? = nil
         if insertionIndex == .zero {
-            if favorites.count > .zero {
+            if to.count > .zero {
                 neighbor = .before((to[.zero] as! WordEntity).word)
             }
         } else {

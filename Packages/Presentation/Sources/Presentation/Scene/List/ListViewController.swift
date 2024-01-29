@@ -90,7 +90,7 @@ fileprivate extension ListViewController {
                         snapshot.insertItems([$0.item], beforeItem: neighbor)
                     }
                 } else {
-                    snapshot.appendItems([$0.item], toSection: .favorites)
+                    snapshot.appendItems([$0.item], toSection: $0.section)
                 }
                 dataSource.apply(snapshot, animatingDifferences: true)
             }.store(in: &cancellables)
