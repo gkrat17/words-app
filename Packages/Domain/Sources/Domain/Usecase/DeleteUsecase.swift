@@ -20,9 +20,9 @@ public final class DefaultDeleteUsecase: DeleteUsecase {
         deleteRepo.delete(word: word) { [weak self] result in
             guard let self else { return }
             switch result {
-            case .success(let entity):
-                if let entity {
-                    eventSendingUsecase.send(entity: .init(type: .delete, entity: entity))
+            case .success(let deleted):
+                if deleted {
+                    eventSendingUsecase.send(event: .delete(word))
                 }
                 handler(.success(()))
             case .failure(let error):

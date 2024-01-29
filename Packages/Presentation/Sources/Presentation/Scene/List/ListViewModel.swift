@@ -82,33 +82,34 @@ fileprivate extension ListViewModel {
         }
     }
 
-    func handle(event: EventEntity) {
-        switch event.type {
-        case .add:        handleAdd(event: event)
-        case .delete:     handleDelete(event: event)
-        case .favorite:   handleFavorite(event: event)
-        case .unfavorite: handleUnfavorite(event: event)
+    func handle(event: EventType) {
+        switch event {
+        case .add(let entity):        handleAddEvent(entity: entity)
+        case .delete(let word):       handleDeleteEvent(word: word)
+        case .favorite(let entity):   handleFavoriteEvent(entity: entity)
+        case .unfavorite(let entity): handleUnfavoriteEvent(entity: entity)
         }
     }
 
-    func handleAdd(event: EventEntity) {
+    func handleAddEvent(entity: WordEntity) {
         guard loaded else { return }
-        nonfavorites.add(event.entity)
-        page.send(.loaded([event.entity.word]))
+        nonfavorites.add(entity)
+        page.send(.loaded([entity.word]))
     }
 
-    func handleDelete(event: EventEntity) {
-        favorites.remove(event.entity)
-        nonfavorites.remove(event.entity)
-        remove.send(event.entity.word)
+    func handleDeleteEvent(word: WordType) {
+        let entity = WordEntity(word: word)
+        favorites.remove(entity)
+        nonfavorites.remove(entity)
+        remove.send(entity.word)
     }
 
-    func handleFavorite(event: EventEntity) {
-        replace(entity: event.entity, from: nonfavorites, to: favorites, section: .favorites)
+    func handleFavoriteEvent(entity: WordEntity) {
+        replace(entity: entity, from: nonfavorites, to: favorites, section: .favorites)
     }
 
-    func handleUnfavorite(event: EventEntity) {
-        replace(entity: event.entity, from: favorites, to: nonfavorites, section: .nonfavorites)
+    func handleUnfavoriteEvent(entity: WordEntity) {
+        replace(entity: entity, from: favorites, to: nonfavorites, section: .nonfavorites)
     }
 
     func replace(

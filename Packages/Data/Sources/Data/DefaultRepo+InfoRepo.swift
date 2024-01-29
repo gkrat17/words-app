@@ -9,8 +9,7 @@ import Foundation
 
 extension DefaultRepo: InfoRepo {
     public func info(of word: WordType, _ handler: @escaping (Result<WordInfoEntity, Error>) -> Void) {
-        let index = keys.index(of: word)
-
+        let index = keys.index(of: WordEntity(word: word))
         if index == NSNotFound {
             handler(.failure(ErrorEntity.error))
         } else {

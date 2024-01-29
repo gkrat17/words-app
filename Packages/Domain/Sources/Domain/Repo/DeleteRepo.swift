@@ -5,5 +5,5 @@
 //
 
 public protocol DeleteRepo {
-    func delete(word: WordType, _: @escaping (Result<WordEntity?, Error>) -> Void)
+    func delete(word: WordType, _: @escaping (Result<Bool, Error>) -> Void)
 }

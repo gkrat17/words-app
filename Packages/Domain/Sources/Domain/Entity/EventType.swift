@@ -5,8 +5,8 @@
 //
 
 public enum EventType {
-    case add
-    case delete
-    case favorite
-    case unfavorite
+    case add(WordEntity)
+    case delete(WordType)
+    case favorite(WordEntity)
+    case unfavorite(WordEntity)
 }

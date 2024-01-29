@@ -8,15 +8,15 @@ import Domain
 import Foundation
 
 extension DefaultRepo: ReadRepo {
-    public func read(startIndex: IndexType, pageMaxSize: Int, _ handler: @escaping (Result<[WordEntity], Error>) -> Void) {
+    public func read(startIndex: Int, pageMaxSize: Int, _ handler: @escaping (Result<[WordEntity], Error>) -> Void) {
         guard startIndex < keys.count else {
             handler(.success([]))
             return
         }
         let endIndex = min(startIndex - 1 + pageMaxSize, keys.count - 1)
-        var result = Array<WordEntity>()
+        var result = [WordEntity]()
         for i in startIndex...endIndex {
-            result.append(.init(word: keys[i] as! WordType, index: i))
+            result.append(keys[i] as! WordEntity)
         }
         handler(.success(result))
     }

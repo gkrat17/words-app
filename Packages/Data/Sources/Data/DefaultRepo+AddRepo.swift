@@ -8,20 +8,21 @@ import Domain
 import Foundation
 
 extension DefaultRepo: AddRepo {
-    public func add(word: String, _ handler: @escaping (Result<WordEntity?, Error>) -> Void) {
+    public func add(word: WordType, _ handler: @escaping (Result<WordEntity?, Error>) -> Void) {
         do {
             try append(string: word)
         } catch {
             return handler(.failure(ErrorEntity.error))
         }
 
-        let index = keys.index(of: word)
+        let index = keys.index(of: WordEntity(word: word))
 
         if index == NSNotFound {
-            keys.add(word)
-            values.append(.init(favorite: false, count: 1))
+            let entity = WordEntity(word: word, index: _index)
             _index += 1
-            handler(.success(.init(word: word, index: _index)))
+            keys.add(entity)
+            values.append(.init(favorite: false, count: 1))
+            handler(.success(entity))
         } else {
             values[index].count += 1
             handler(.success(nil))

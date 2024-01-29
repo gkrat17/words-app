@@ -7,9 +7,9 @@
 public protocol FavoriteRepo: FavoritingRepo, UnfavoritingRepo {}
 
 public protocol FavoritingRepo {
-    func favorite(word: WordType, _: @escaping (Result<WordEntity?, Error>) -> Void)
+    func favorite(word: WordType, _: @escaping (Result<WordEntity, Error>) -> Void)
 }
 
 public protocol UnfavoritingRepo {
-    func unfavorite(word: WordType, _: @escaping (Result<WordEntity?, Error>) -> Void)
+    func unfavorite(word: WordType, _: @escaping (Result<WordEntity, Error>) -> Void)
 }

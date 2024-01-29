@@ -4,6 +4,7 @@
 //  Created by giorgi kratsashvili on 29.01.24.
 //
 
+import Domain
 import Foundation
 
 extension DefaultRepo {
@@ -57,12 +58,13 @@ fileprivate extension DefaultRepo {
     func process(string: String) {
         let string = string.split(separator: "\n")
         string.forEach {
-            let string = String($0)
-            if keys.contains(string) {
-                let i = keys.index(of: string)
-                values[i].count += 1
+            let entity = WordEntity(word: String($0), index: _index)
+            if keys.contains(entity) {
+                let index = keys.index(of: entity)
+                values[index].count += 1
             } else {
-                keys.add(string)
+                _index += 1
+                keys.add(entity)
                 values.append(.init(favorite: false, count: 1))
             }
         }

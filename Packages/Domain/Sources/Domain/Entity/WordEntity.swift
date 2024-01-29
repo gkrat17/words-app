@@ -8,7 +8,7 @@ public struct WordEntity: Hashable {
     public let word: WordType
     public let index: IndexType
 
-    public init(word: WordType, index: IndexType) {
+    public init(word: WordType, index: IndexType = .zero) {
         self.word = word
         self.index = index
     }

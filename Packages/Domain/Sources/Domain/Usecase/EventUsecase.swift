@@ -7,25 +7,25 @@
 import Combine
 
 public protocol EventPublishingUsecase {
-    var publisher: AnyPublisher<EventEntity, Never> { get }
+    var publisher: AnyPublisher<EventType, Never> { get }
 }
 
 public protocol EventSendingUsecase {
-    func send(entity: EventEntity)
+    func send(event: EventType)
 }
 
 public protocol EventUsecase: EventPublishingUsecase, EventSendingUsecase {}
 
 public final class DefaultEventUsecase: EventUsecase {
-    private lazy var _publisher = PassthroughSubject<EventEntity, Never>()
+    private lazy var _publisher = PassthroughSubject<EventType, Never>()
 
     public init() {}
 
-    public var publisher: AnyPublisher<EventEntity, Never> {
+    public var publisher: AnyPublisher<EventType, Never> {
         _publisher.eraseToAnyPublisher()
     }
 
-    public func send(entity: EventEntity) {
-        _publisher.send(entity)
+    public func send(event: EventType) {
+        _publisher.send(event)
     }
 }
