@@ -84,6 +84,23 @@ fileprivate extension ListViewController {
             .sink { [weak self] _ in
                 self?.snapshot.deleteAllItems()
             }.store(in: &cancellables)
+
+        viewModel.insert
+            .sink { [weak self] in
+                guard let self else { return }
+                snapshot.deleteItems([$0.item])
+                if let neighbor = $0.neighbor {
+                    switch neighbor {
+                    case .after:
+                        snapshot.insertItems([$0.item], afterItem: neighbor.word)
+                    case .before:
+                        snapshot.insertItems([$0.item], beforeItem: neighbor.word)
+                    }
+                } else {
+                    snapshot.appendItems([$0.item], toSection: .favorites)
+                }
+                dataSource.apply(snapshot, animatingDifferences: true)
+            }.store(in: &cancellables)
     }
 }
 
@@ -93,6 +110,6 @@ extension ListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // viewModel.didSelectItemAt(at: indexPath.row)
+        viewModel.didSelectItemAt(at: indexPath)
     }
 }

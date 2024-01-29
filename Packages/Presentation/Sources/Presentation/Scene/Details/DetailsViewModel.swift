@@ -6,6 +6,4 @@
 
 import Combine
 
-@MainActor final class DetailsViewModel {
-    nonisolated init() {}
-}
+final class DetailsViewModel {}
