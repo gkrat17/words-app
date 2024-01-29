@@ -48,9 +48,9 @@ extension DetailsViewModel {
             case .success:
                 count.value -= 1
                 if count.value == .zero {
-                    favorite.value = false
+                    /* favorite.value = false
                     isEnabledDelete.value = false
-                    isEnabledAdd.value = true
+                    isEnabledAdd.value = true */
                     dismiss.send(())
                     return
                 }
