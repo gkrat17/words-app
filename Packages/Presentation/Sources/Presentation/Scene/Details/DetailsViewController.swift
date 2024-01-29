@@ -50,6 +50,8 @@ final class DetailsViewController: UIViewController {
     }
 
     func configureUI() {
+        title = "Details"
+
         view.addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -89,6 +91,11 @@ final class DetailsViewController: UIViewController {
         viewModel.isEnabledDelete
             .sink { [weak self] in
                 self?.delete.isEnabled = $0
+            }.store(in: &cancellables)
+
+        viewModel.dismiss
+            .sink { [weak self] _ in
+                self?.navigationController?.popViewController(animated: true)
             }.store(in: &cancellables)
 
         add.addTarget(self, action: #selector(addTapped), for: .touchUpInside)

@@ -118,7 +118,7 @@ fileprivate extension ListViewModel {
         to: NSMutableOrderedSet,
         section: SectionType
     ) {
-        guard !to.contains(entity) else { return }
+        guard from.contains(entity), !to.contains(entity) else { return }
 
         let insertionIndex = to.insertionIndex(of: entity) {
             ($0 as! WordEntity).index < ($1 as! WordEntity).index

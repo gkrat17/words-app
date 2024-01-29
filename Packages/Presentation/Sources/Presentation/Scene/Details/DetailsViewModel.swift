@@ -15,6 +15,7 @@ final class DetailsViewModel {
     private(set) var favorite = CurrentValueSubject<Bool, Never>(false)
     private(set) var isEnabledAdd = CurrentValueSubject<Bool, Never>(true)
     private(set) var isEnabledDelete = CurrentValueSubject<Bool, Never>(true)
+    private(set) var dismiss = PassthroughSubject<Void, Never>()
     /* Deps */
     @Inject(container: .usecases) private var infoUsecase: InfoUsecase
     @Inject(container: .usecases) private var favoriteUsecase: FavoriteUsecase
@@ -50,6 +51,7 @@ extension DetailsViewModel {
                     favorite.value = false
                     isEnabledDelete.value = false
                     isEnabledAdd.value = true
+                    dismiss.send(())
                     return
                 }
             case .failure(let error): print(error)
