@@ -14,7 +14,6 @@ extension DefaultRepo: InfoRepo {
         if index == NSNotFound {
             handler(.failure(ErrorEntity.error))
         } else {
-            values[index].count += 1
             handler(.success(values[index]))
         }
     }

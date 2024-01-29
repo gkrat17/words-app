@@ -9,7 +9,11 @@ import Foundation
 
 extension DefaultRepo: AddRepo {
     public func add(word: String, _ handler: @escaping (Result<WordEntity?, Error>) -> Void) {
-        // write to the end of the file
+        do {
+            try append(string: word)
+        } catch {
+            handler(.failure(ErrorEntity.error))
+        }
 
         let index = keys.index(of: word)
 

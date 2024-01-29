@@ -9,14 +9,18 @@ import Foundation
 
 extension DefaultRepo: DeleteRepo {
     public func delete(word: String, _ handler: @escaping (Result<WordEntity?, Error>) -> Void) {
-        // delete last occurence of the word in a file
+        do {
+            try deleteLast(string: word)
+        } catch {
+            handler(.failure(ErrorEntity.error))
+        }
 
         let index = keys.index(of: word)
 
         guard index != NSNotFound,
               values[index].count > .zero
         else {
-            // handler(.failure(ErrorEntity.error))
+            handler(.failure(ErrorEntity.error))
             return
         }
 

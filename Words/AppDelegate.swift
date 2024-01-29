@@ -16,6 +16,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         let repo = DefaultRepo()
+        do {
+            try repo.load()
+        } catch {
+            fatalError("failed loading file")
+        }
 
         Domain.configure(repos: .init {
             Dependency { repo as AddRepo }
