@@ -6,9 +6,9 @@
 
 public final class WordInfoEntity {
     public var favorite: Bool
-    public var count: UInt
+    public var count: Int
 
-    public init(favorite: Bool, count: UInt) {
+    public init(favorite: Bool, count: Int) {
         self.favorite = favorite
         self.count = count
     }

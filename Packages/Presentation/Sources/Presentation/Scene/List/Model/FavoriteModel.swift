@@ -6,7 +6,7 @@
 
 import Domain
 
-class FavoriteModel: Hashable {
+struct FavoriteModel: Hashable {
     let word: WordType
     let index: IndexType
 

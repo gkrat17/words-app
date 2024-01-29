@@ -135,7 +135,6 @@ fileprivate extension ListViewModel {
 
         replace.send(.init(section: .favorites, item: favorite.word, neighbor: neighbor))
     }
-
     func handleUnfavorite(event: EventEntity) {
         let favorite = FavoriteModel(word: event.word, index: event.index)
 

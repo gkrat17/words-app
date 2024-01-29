@@ -5,79 +5,110 @@
 //
 
 import DI
+import Domain
 import Combine
 import UIKit
 
-class DetailsViewController: UIViewController {
-    @Inject(container: .viewModels) var viewModel: DetailsViewModel
-    private var cancellable: AnyCancellable?
+final class DetailsViewController: UIViewController {
+    @Inject(container: .viewModels) private var viewModel: DetailsViewModel
 
-    let label: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 20
+        stackView.alignment = .center
+        return stackView
     }()
-    
-    let removeButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("Remove", for: .normal)
-        button.setTitleColor(.systemBlue, for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
+
+    private let word = UILabel()
+    private let count = UILabel()
+    private let favorite = UISwitch()
+
+    private let add: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Add", for: .normal)
         return button
     }()
-    
-    let toggleSwitch: UISwitch = {
-        let toggleSwitch = UISwitch()
-        toggleSwitch.translatesAutoresizingMaskIntoConstraints = false
-        return toggleSwitch
+
+    private let delete: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Delete", for: .normal)
+        return button
     }()
+
+    private var cancellables = Set<AnyCancellable>()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
-        bindViewModel()
+        configure()
         viewModel.viewDidLoad()
     }
-    
-    private func setupUI() {
-        // Add UI elements to the view
-        view.addSubview(label)
-        view.addSubview(removeButton)
-        view.addSubview(toggleSwitch)
-        
-        // Layout constraints
+
+    func configure() {
+        configureUI()
+        bind()
+    }
+
+    func configureUI() {
+        view.addSubview(stackView)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+
+        stackView.addArrangedSubview(word)
+        stackView.addArrangedSubview(count)
+        stackView.addArrangedSubview(favorite)
+        stackView.addArrangedSubview(add)
+        stackView.addArrangedSubview(delete)
+
         NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -50),
-            
-            removeButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            removeButton.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 20),
-            
-            toggleSwitch.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            toggleSwitch.topAnchor.constraint(equalTo: removeButton.bottomAnchor, constant: 20)
+            stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
-
-        removeButton.addTarget(self, action: #selector(removeButtonTapped), for: .touchUpInside)
     }
 
-    private func bindViewModel() {
-        toggleSwitch.addTarget(self, action: #selector(toggleSwitchDidChange), for: .valueChanged)
-        label.text = viewModel.word
-        cancellable = viewModel.info
+    func bind() {
+        viewModel.word
             .sink { [weak self] in
-                guard let self, case .loaded(let result) = $0 else { return }
-                print(result.count)
-                label.text = "\(label.text ?? ""): \(result.count)"
-                toggleSwitch.isOn = result.favorite
-            }
+                self?.word.text = $0
+            }.store(in: &cancellables)
+
+        viewModel.count
+            .sink { [weak self] in
+                self?.count.text = "Count: \($0)"
+            }.store(in: &cancellables)
+
+        viewModel.favorite
+            .sink { [weak self] in
+                self?.favorite.isOn = $0
+            }.store(in: &cancellables)
+
+        viewModel.isEnabledAdd
+            .sink { [weak self] in
+                self?.add.isEnabled = $0
+            }.store(in: &cancellables)
+
+        viewModel.isEnabledDelete
+            .sink { [weak self] in
+                self?.delete.isEnabled = $0
+            }.store(in: &cancellables)
+
+        add.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
+        delete.addTarget(self, action: #selector(deleteTapped), for: .touchUpInside)
+        favorite.addTarget(self, action: #selector(favoriteToggled), for: .valueChanged)
     }
 
-    @objc private func removeButtonTapped() {
-        viewModel.remove()
+    @objc func addTapped() {
+        viewModel.add()
     }
 
-    @objc private func toggleSwitchDidChange() {
-        viewModel.favorite(isOn: toggleSwitch.isOn)
+    @objc func deleteTapped() {
+        viewModel.delete()
+    }
+
+    @objc func favoriteToggled() {
+        viewModel.favorite(isOn: favorite.isOn)
+    }
+
+    func set(word: WordType) {
+        viewModel.set(word: word)
     }
 }
