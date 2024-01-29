@@ -18,9 +18,9 @@ extension DefaultRepo: DeleteRepo {
         let word = WordEntity(word: word)
         let index = keys.index(of: word)
 
-        guard index != NSNotFound,
-              values[index].count > .zero
-        else { return handler(.failure(ErrorEntity.error)) }
+        guard index != NSNotFound else {
+            return handler(.failure(ErrorEntity.error))
+        }
 
         values[index].count -= 1
 
